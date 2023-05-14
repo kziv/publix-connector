@@ -1,0 +1,26 @@
+{
+  "name": "publix-connector",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kziv/publix-connector.git"
+  },
+  "keywords": [
+    "publix",
+    "api"
+  ],
+  "author": "Karen Ziv <me@karenziv.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kziv/publix-connector/issues"
+  },
+  "homepage": "https://github.com/kziv/publix-connector#readme",
+  "devDependencies": {
+    "standard": "*"
+  }
+}
