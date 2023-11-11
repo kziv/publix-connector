@@ -1,14 +1,17 @@
-const BaseConnector = require('./BaseConnector');
 const Geocodio = require('geocodio-library-node');
+const BaseConnector = require('./BaseConnector');
 
 class Stores extends BaseConnector {
 
   /**
    * Class constructor.
    *
-   * @param {Object} config Optional configuration.
-   * @param {string} [config.addressParserApiKey] - API key for the given address parser
-   * @param {boolean} [config.shouldParseAddresses=false] - Whether or not to parse raw addresses into components.
+   * @param {Object} config
+   *   Optional configuration.
+   * @param {string} [config.addressParserApiKey]
+   *   API key for the given address parser
+   * @param {boolean} [config.shouldParseAddresses=false]
+   *   Whether or not to parse raw addresses into components.
    *   Not including addressParserApiKey will set this to false regardless of passed in value.
    */
   constructor(config = {}) {
@@ -18,10 +21,13 @@ class Stores extends BaseConnector {
     // Let passed in config override defaults.
     // We want to define every config option so
     // we don't have to check if it exists, only value.
-    this.defaults = Object.assign({
-      addressParserApiKey: null,
-      shouldParseAddresses: false
-    }, config);
+    this.defaults = {
+      ...{
+        addressParserApiKey: null,
+        shouldParseAddresses: false,
+      },
+      ...config,
+    };
   }
 
   /**
@@ -38,7 +44,7 @@ class Stores extends BaseConnector {
 
     // We get a DOM object back that we can parse for the HTML
     // we want. In this case, it's store data.
-    const $ = await this.connect(null, {CityStateZip: zip});
+    const $ = await this.connect(null, { CityStateZip: zip });
     if (!$) {
       return stores;
     }
@@ -54,11 +60,10 @@ class Stores extends BaseConnector {
       const link = $(el).find('a.action-tracking-directions').first();
       if (link) {
         // e.g. 7326 McCutcheon Rd Chattanooga, TN 37421
-        //const storeNum = parseInt(link.attr('href').split('/').pop(), 10); // Removes leading zeros
         const storeNum = link.attr('href').split('/').pop().replace(/^0+/, '');
         stores.set(storeNum, {
           publixId: link.attr('data-tracking-storeid'),
-          storeNum: storeNum,
+          storeNum,
           name: $(el).find('.addressHeadline').text(),
           addressRaw: $(el).find('.addressStoreTitle').text(), // This is the WHOLE address including city, state, zip
         });
@@ -68,7 +73,7 @@ class Stores extends BaseConnector {
     // Parse the raw addresses from the API for all the new stores.
     if (this.defaults.shouldParseAddresses && stores.size) {
       // Extract the raw addresses from the list of stores.
-      let rawAddressObject = {};
+      const rawAddressObject = {};
       stores.forEach((store, storeId) => {
         rawAddressObject[storeId] = store.addressRaw;
       });

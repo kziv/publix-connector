@@ -6,7 +6,7 @@ class BaseConnector {
   baseUrl = 'https://accessibleweeklyad.publix.com/PublixAccessibility';
 
   baseParams = {
-    NuepRequest: true
+    NuepRequest: true,
   };
 
   /**
@@ -22,15 +22,15 @@ class BaseConnector {
    */
   async connect(endpoint, callParams) {
     // If there's a specific endpoint, concat it.
-    const callUrl = this.baseUrl;
+    let callUrl = this.baseUrl;
     if (endpoint) {
       callUrl += `/${endpoint}`;
     }
 
     // Merge the call-specific params with global params.
-    let params = {
+    const params = {
       ...this.baseParams,
-      ...callParams
+      ...callParams,
     };
 
     // Make the call.
@@ -38,7 +38,7 @@ class BaseConnector {
     try {
       response = await axios.get(
         callUrl,
-        { params: params}
+        { params },
       );
     }
     catch (err) {
