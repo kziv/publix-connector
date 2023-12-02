@@ -50,17 +50,17 @@ class Sales extends BaseConnector {
    *   List of current Sales.
    */
   async getSales(storeId, filters = {}) {
-
     let sales = [];
 
     // If no departments are requested, that means search all of them.
     const departments = filters.departments ?? Object.keys(this.#departments);
-    departments.forEach(async (dept) => {
-      const deptSales = await this.getSalesByDepartment(storeId, dept);
+
+    for (const currentDept of departments) {
+      const deptSales = await this.getSalesByDepartment(storeId, currentDept);
       if (deptSales.length) {
         sales.push(...deptSales);
       }
-    });
+    }
 
     return sales;
   }
