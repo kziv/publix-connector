@@ -98,6 +98,7 @@ class Sales extends BaseConnector {
         startDate: new Date(itemButton.attr('data_startdate')),
         endDate: new Date(itemButton.attr('data_expdate')),
         salePrice,
+        description: itemButton.attr('data_description'),
         isBogo: parseInt(salePrice) === 0,
         product: {
           productId: productId,
