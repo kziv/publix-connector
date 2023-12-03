@@ -95,8 +95,8 @@ class Sales extends BaseConnector {
 
       sales.push({
         storeId: parseInt(itemButton.attr('data_storeid'), 10),
-        startDate: itemButton.attr('data_startdate'),
-        endDate: itemButton.attr('data_expdate'),
+        startDate: new Date(itemButton.attr('data_startdate')),
+        endDate: new Date(itemButton.attr('data_expdate')),
         salePrice,
         isBogo: parseInt(salePrice) === 0,
         product: {
