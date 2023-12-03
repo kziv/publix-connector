@@ -1,15 +1,9 @@
 const BaseConnector = require('./BaseConnector');
 
+/**
+ * Sales connector.
+ */
 class Sales extends BaseConnector {
-
-  /**
-   * Class constructor.
-   */
-  constructor(config = {}) {
-    // Always call the super constructor.
-    super();
-  }
-
   /**                                                                            │
    * Mapping of department names to category IDs                                 │
    *                                                                             │
@@ -50,19 +44,19 @@ class Sales extends BaseConnector {
    *   List of current Sales.
    */
   async getSales(storeId, filters = {}) {
-    let sales = [];
+    const sales = [];
 
     // If no departments are requested, that means search all of them.
     const departments = filters.departments ?? Object.keys(this.#departments);
 
-    for (const currentDept of departments) {
-      const deptSales = await this.getSalesByDepartment(storeId, currentDept);
+    departments.forEach((currentDept) => {
+      const deptSales = this.getSalesByDepartment(storeId, currentDept);
       if (deptSales.length) {
         sales.push(...deptSales);
       }
-    }
+    });
 
-    return sales;
+    return Promise.all(sales);
   }
 
   async getSalesByDepartment(storeId, dept) {
@@ -73,7 +67,8 @@ class Sales extends BaseConnector {
     // we want. In this case, it's store data.
     const $ = await this.connect('/BrowseByListing/ByCategory/', {
       StoreID: storeId,
-      CategoryID: categoryId });
+      CategoryID: categoryId,
+    });
     if (!$) {
       return sales;
     }
@@ -99,19 +94,18 @@ class Sales extends BaseConnector {
         endDate: new Date(itemButton.attr('data_expdate')),
         salePrice,
         description: itemButton.attr('data_description'),
-        isBogo: parseInt(salePrice) === 0,
+        isBogo: parseInt(salePrice, 10) === 0,
         product: {
-          productId: productId,
+          productId,
           name: itemButton.attr('data_title'),
           image: itemButton.attr('data-image'),
-          dept: dept
-        }
+          dept,
+        },
       });
     });
 
     return sales;
   }
-
 }
 
 module.exports = Sales;

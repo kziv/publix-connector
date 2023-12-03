@@ -3,5 +3,5 @@ const Sales = require('./src/Sales');
 
 module.exports = {
   Stores,
-  Sales
+  Sales,
 };

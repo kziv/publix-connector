@@ -1,4 +1,4 @@
-const publixConnector = require('publix-connector');
+const publixConnector = require('@kziv/publix-connector');
 
 // Instantiate the Stores connector.
 const Stores = new publixConnector.Stores({
@@ -6,7 +6,8 @@ const Stores = new publixConnector.Stores({
   addressParserApiKey: 'YOUR-GEOCOD.IO-API-KEY',
 });
 
-// Get stores for a given location.
+// Get stores for a given location, promise style.
+// You can also use async/await syntax.
 Stores.getStores('some sort of address')
   .then((data) => {
     console.log(data);

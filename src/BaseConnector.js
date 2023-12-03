@@ -1,10 +1,16 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
+/**
+ * Base class for all connectors.
+ */
 class BaseConnector {
-
+  // Base URL of the Publix site.
+  // This is their plain text accessible site which makes parsing markup
+  // easier.
   baseUrl = 'https://accessibleweeklyad.publix.com/PublixAccessibility';
 
+  // Query string parameters required of all calls to the site.
   baseParams = {
     NuepRequest: true,
   };
@@ -50,14 +56,13 @@ class BaseConnector {
     // as they don't offer an API. Since all calls will need
     // to be parsed, we do it here instead of in the caller's
     // scope.
-    if (response.hasOwnProperty('data') && response.data.length) {
+    if (Object.prototype.hasOwnProperty.call(response, 'data') && response.data.length) {
       const $ = cheerio.load(response.data);
       return $;
     }
 
     return response;
   }
-
 }
 
 module.exports = BaseConnector;

@@ -1,8 +1,10 @@
 const Geocodio = require('geocodio-library-node');
 const BaseConnector = require('./BaseConnector');
 
+/**
+ * Stores connector.
+ */
 class Stores extends BaseConnector {
-
   /**
    * Class constructor.
    *
@@ -82,15 +84,15 @@ class Stores extends BaseConnector {
       // @todo normalize the data fields so services can be swapped out.
       const parsedStoreAddresses = await this.parseAddresses(rawAddressObject);
       if (parsedStoreAddresses) {
-        for (const [storeId, parsedAddress] of Object.entries(parsedStoreAddresses)) {
+        Object.entries(parsedStoreAddresses).forEach((entry) => {
+          const [storeId, parsedAddress] = entry;
           if (parsedAddress) {
             // Returns object ref, no need to set it back in.
             const store = stores.get(storeId);
             store.address = parsedAddress;
           }
-        }
+        });
       }
-
     }
 
     return stores;
@@ -116,14 +118,14 @@ class Stores extends BaseConnector {
     const final = {};
 
     if (response.results) {
-      for (const [storeId, parsedAddress] of Object.entries(response.results)) {
+      Object.entries(response.results).forEach((entry) => {
+        const [storeId, parsedAddress] = entry;
         final[storeId] = parsedAddress.response.results[0] ?? null;
-      }
+      });
     }
 
     return final;
   }
-
 }
 
 module.exports = Stores;
