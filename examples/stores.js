@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const publixConnector = require('@kziv/publix-connector');
 
 // Instantiate the Stores connector.
