@@ -120,12 +120,64 @@ class Stores extends BaseConnector {
     if (response.results) {
       Object.entries(response.results).forEach((entry) => {
         const [storeId, parsedAddress] = entry;
-        final[storeId] = parsedAddress.response.results[0] ?? null;
+        final[storeId] = parsedAddress.response.results[0]
+          ? Stores.#standardizeAddress(parsedAddress.response.results[0])
+          : null;
       });
     }
 
     return final;
   }
+
+  /**
+   * Standardizes an address based on the geocoding service it comes from.
+   *
+   * @param {Object} address
+   *   The raw address data from the geocoding service.
+   * @param {string} [service=geocod.io]
+   *   Geocoding service address came from.
+   *
+   * @return {Object}
+   *   Address in a standard format.
+   */
+  static #standardizeAddress = (address, service = 'geocod.io') => {
+    const finalAddress = {
+      components: {
+        number: null,
+        street: null,
+        city: null,
+        county: null,
+        state: null,
+        zip: null,
+      },
+      formatted: null,
+      location: {
+        lat: null,
+        long: null,
+      },
+    };
+
+    // @todo if we offer more services, create some sort of interface
+    // and a class for each service.
+    switch (service) {
+      case 'geocod.io':
+        finalAddress.components.number = address.address_components.number;
+        finalAddress.components.street = address.address_components.formatted_street;
+        finalAddress.components.city = address.address_components.city;
+        finalAddress.components.county = address.address_components.county;
+        finalAddress.components.state = address.address_components.state;
+        finalAddress.components.zip = address.address_components.zip;
+        finalAddress.formatted = address.formatted_address;
+        finalAddress.location.lat = address.location.lat;
+        finalAddress.location.long = address.location.lng;
+        break;
+
+      default:
+        return finalAddress;
+    }
+
+    return finalAddress;
+  };
 }
 
 module.exports = Stores;
