@@ -53,7 +53,9 @@ class Sales extends BaseConnector {
       sales.push(this.getSalesByDepartment(storeId, currentDept));
     });
 
-    return await Promise.all(sales);
+    // Resolve and flatten the array of promises.
+    const final = await Promise.all(sales);
+    return final.flatMap((item) => item);
   }
 
   async getSalesByDepartment(storeId, dept) {
