@@ -42,19 +42,21 @@ class Stores extends BaseConnector {
    *   List of stores near the given ZIP code.
    */
   async getStores(zip) {
+    // We save the data initially as a Map because it allows us to better
+    // cross reference the batch of address data with each store.
     const stores = new Map();
 
     // We get a DOM object back that we can parse for the HTML
     // we want. In this case, it's store data.
     const $ = await this.connect(null, { CityStateZip: zip });
     if (!$) {
-      return stores;
+      return [...stores];
     }
 
     // Parse the HTML for store data. Syntax is based on jQuery.
     const storeList = $('#neupStoreLocation div.storeLocation_storeListTile');
     if (!storeList.length) {
-      return stores;
+      return [...stores];
     }
 
     // Add to stores list keyed by store_num for easier lookup in the address parsing.
@@ -95,7 +97,10 @@ class Stores extends BaseConnector {
       }
     }
 
-    return stores;
+    // Convert the Map to an array.
+    // Devs are far more used to an array and I can't think of a use case
+    // where you'd need to search the results by the storeId (Map key).
+    return [...stores.values()];
   }
 
   /**
